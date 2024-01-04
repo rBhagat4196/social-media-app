@@ -5,11 +5,15 @@ import HomePage from "./pages/HomePage"
 import LoginPage from "./pages/LoginPage"
 import RegisterPage from "./pages/RegisterPage"
 import ResetPasswordPage from "./pages/ResetPasswordPage"
+import { useSelector } from "react-redux"
 
 
 function App() {
+  const {theme} = useSelector((state)=>state.theme)
   return (
     <>
+    <div data-theme={theme} className="w-full min-h-[100vh]">
+
       <Routes>
         <Route element={<Layout/>}>
           <Route path="/" element= {<HomePage/>}/>
@@ -19,6 +23,7 @@ function App() {
         <Route path="/register" element={<RegisterPage/>}/>
         <Route path="/reset-password" element={<ResetPasswordPage/>}/>
       </Routes>
+    </div>
     </>
   )
 }

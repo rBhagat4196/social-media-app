@@ -6,4 +6,5 @@ const store = configureStore({
 });
 
 const {dispatch} = store;
+console.log(store)
 export {store,dispatch};
