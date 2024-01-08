@@ -1,13 +1,13 @@
-import { useSelector } from "react-redux"
+import { useSelector } from 'react-redux'
 
 const HomePage = () => {
-  const {theme} = useSelector((state)=>state.theme);
-  console.log(theme);
-  return (
-    <div>
-        Home Page      
-    </div>
-  )
+  const { theme } = useSelector((state) => {
+    console.log(state);
+    return state.theme
+  }
+)
+  console.log(theme)
+  return <div>Home Page</div>
 }
 
 export default HomePage
