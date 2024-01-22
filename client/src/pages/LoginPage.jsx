@@ -36,23 +36,11 @@ const LoginPage = () => {
 
   const onSubmit = async () => {
 
-    if (!formData.password && !formData.email) {
+    if (!formData.email || !formData.password) {
       setErrors({
-        email: "Email Address is required",
-        password: "Password is required",
-      });
-    }
-    else if(!formData.password){
-      setErrors({
-        email: "",
-        password: "Password is required",
-      });
-    }
-    else if(!formData.email){
-      setErrors({
-        email: "Email is required",
-        password: "",
-      });
+        email : !formData.email ? 'Email is required':'',
+        password : !formData.password ? 'Password is required' : ''
+      })
     }
 
     // console.log(errors)
@@ -60,21 +48,13 @@ const LoginPage = () => {
   
       setTimeout(() => {
       setIsSubmitting(false);
-  
-      if (formData.email === "example@example.com" && formData.password === "password") {
-        // Successful login
-        console.log("Login successful");
-      } else {
-        // Failed login
-        console.log("Invalid login credentials");
-      }
     }, 2000);
   };
   
 
   return (
     <div className='bg-bgColor w-full h-[100vh] flex items-center justify-center p-6'>
-      <div className='w-full md:w-2/3 h-fit lg:h-full 2xl:h-5/6 py-8 lg:py-0 flex bg-primary rounded-xl overflow-hidden shadow-xl'>
+      <div className='w-full flex-row-reverse md:w-2/3 h-fit lg:h-full 2xl:h-5/6 py-8 lg:py-0 flex bg-primary rounded-xl overflow-hidden shadow-xl'>
         {/* LEFT */}
         <div className='w-full lg:w-1/2 h-full p-10 2xl:px-20 flex flex-col justify-center'>
           <div className='w-full flex gap-2 items-center mb-6'>
