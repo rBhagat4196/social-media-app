@@ -2,8 +2,12 @@
 
 const Loading = () => {
   return (
-    <div>
-      Loading ...
+    <div className="dots-container">
+        <div className="dot"></div>
+        <div className="dot"></div>
+        <div className="dot"></div>
+        <div className="dot"></div>
+        <div className="dot"></div>
     </div>
   )
 }

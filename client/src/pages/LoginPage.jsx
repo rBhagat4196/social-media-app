@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { BsShare } from "react-icons/bs";
@@ -6,7 +7,7 @@ import { ImConnection } from "react-icons/im";
 import TextInput from "../components/TextInput";
 import Loading from "../components/Loading";
 import BgImage from "../assets/bg-image.webp";
-
+import {useDispatch} from "react-redux"
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -19,7 +20,8 @@ const LoginPage = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const [errMsg, setErrMsg] = useState("");
+  const dispatch = useDispatch();
   const handleInputChange = (name, value) => {
     setFormData({
       ...formData,
@@ -33,15 +35,7 @@ const LoginPage = () => {
   };
 
   const onSubmit = async () => {
-    // console.log("Form submitted with data:", formData);
-  
-    // if (!formData.email) {
-    //   setErrors({
-    //     ...errors,
-    //     email: "Email Address is required",
-    //   });
-    // }
-  
+
     if (!formData.password && !formData.email) {
       setErrors({
         email: "Email Address is required",
@@ -135,7 +129,17 @@ const LoginPage = () => {
             >
               Forgot Password?
             </Link>
-
+            {errMsg?.message && (
+              <span
+                className={`text-sm ${
+                  errMsg?.status == "failed"
+                    ? "text-[#f64949fe]"
+                    : "text-[#2ba150fe]"
+                } mt-0.5`}
+              >
+                {errMsg?.message}
+              </span>
+            )}
             {/* Submit Button */}
             {isSubmitting ? (
               <Loading />
