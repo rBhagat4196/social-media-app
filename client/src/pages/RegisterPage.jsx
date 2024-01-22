@@ -91,7 +91,7 @@ const RegisterPage = () => {
               <TextInput
                 type='text'
                 placeholder='First name'
-                styles='w-full rounded-full bg-secondary border border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text-[#666]'
+                styles='w-full rounded-xl bg-secondary border border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text-[#666]'
                 value={formData.firstName}
                 onChange={(e) => handleInputChange('firstName', e.target.value)}
                 error={errors.firstName}
@@ -99,7 +99,7 @@ const RegisterPage = () => {
               <TextInput
                 type='text'
                 placeholder='Last name'
-                styles='w-full rounded-full bg-secondary border border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text-[#666]'
+                styles='w-full rounded-xl bg-secondary border border-[#66666690] outline-none text-sm text-ascent-1 px-4 py-3 placeholder:text-[#666]'
                 value={formData.lastName}
                 onChange={(e) => handleInputChange('lastName', e.target.value)}
                 error={errors.lastName}
