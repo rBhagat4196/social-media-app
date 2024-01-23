@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import TopBar from '../components/TopBar'
 import ProfileCard from '../components/ProfileCard'
 import FriendCard from '../components/FriendCard'
-import { friends, requests } from '../assets/userInfo'
+import { friends, requests , posts} from '../assets/userInfo'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import NoProfile from '../assets/userprofile.png'
@@ -12,6 +12,7 @@ import TextInput from '../components/TextInput'
 import  Loading from "../components/Loading"
 import { BiImages ,BiSolidVideo } from 'react-icons/bi'
 import {BsFiletypeGif} from "react-icons/bs"
+import {PostCard} from "../components/PostCard"
 const HomePage = () => {
   const { user } = useSelector((state) => state.user)
   const [friendRequest, setFriendRequest] = useState(requests)
@@ -21,6 +22,7 @@ const HomePage = () => {
   const [errMsg, setErrMsg] = useState("");
   const [posting,setPosting] = useState(false);
   const [file,setFile] = useState(null);
+  const [loading,setLoading] = useState(false)
   const handleInputChange = (e)=>{
     setPost(e.target.value);
     setError("")
@@ -135,6 +137,24 @@ const HomePage = () => {
                 </div>
               </div>
             </form>
+
+            {loading ? (
+              <Loading />
+            ) : posts?.length > 0 ? (
+              posts?.map((post) => (
+                <PostCard
+                  key={post?._id}
+                  post={post}
+                  user={user}
+                  deletePost={() => {}}
+                  likePost={() => {}}
+                />
+              ))
+            ) : (
+              <div className='flex w-full h-full items-center justify-center'>
+                <p className='text-lg text-ascent-2'>No Post Available</p>
+              </div>
+            )}
           </div>
 
           {/* right side  */}
