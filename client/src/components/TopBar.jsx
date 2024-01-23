@@ -40,6 +40,7 @@ const TopBar = () => {
           styles="w-[18rem] lg:w-[38rem]  rounded-l-full py-3"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleSearch}
         />
         <button
           type="submit"
