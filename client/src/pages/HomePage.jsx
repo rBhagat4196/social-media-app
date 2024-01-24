@@ -12,12 +12,12 @@ import TextInput from '../components/TextInput'
 import  Loading from "../components/Loading"
 import { BiImages ,BiSolidVideo } from 'react-icons/bi'
 import {BsFiletypeGif} from "react-icons/bs"
-import {PostCard} from "../components/PostCard"
+import PostCard from "../components/PostCard"
 const HomePage = () => {
   const { user } = useSelector((state) => state.user)
   const [friendRequest, setFriendRequest] = useState(requests)
   const [suggestedFriends, setSuggestedFriends] = useState(friends)
-  const [post,setPost] = useState(null)
+  const [post,setPost] = useState()
   const [error,setError] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [posting,setPosting] = useState(false);
