@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import moment from "moment";
 import { BiComment, BiLike, BiSolidLike } from "react-icons/bi";
 import {MdOutlineDeleteOutline} from "react-icons/md"
+import CommentForm from "./CommentForm";
+import { postComments } from "../assets/userInfo";
 const PostCard = ({post , user , deletePost , likePost}) => {
     const [showAll , setShowAll] = useState(0);
     const [showReply , setShowReply] = useState(0);
@@ -13,7 +15,11 @@ const PostCard = ({post , user , deletePost , likePost}) => {
     const [loading , setLoading] = useState(false);
     const [replyComments ,setReplyComments] = useState(0);
     const [showComments , setShowComments] = useState(0);
-
+    const getComments = async()=>{
+      setReplyComments(0);
+      setComments(postComments);
+      setLoading(false)
+    }
   return (
     <div className="mb-2 bg-primary border-b-2 p-4 rounded-xl">
       {/* profile image , name  */}
@@ -78,7 +84,7 @@ const PostCard = ({post , user , deletePost , likePost}) => {
       </div>
 
       {/* like , comments , delete  */}
-      
+
       <div
         className='mt-4 flex justify-between items-center px-3 py-2 text-ascent-2
       text-base border-t border-[#66666645]'
@@ -95,8 +101,8 @@ const PostCard = ({post , user , deletePost , likePost}) => {
         <p
           className='flex gap-2 items-center text-base cursor-pointer'
           onClick={() => {
-            setShowComments(showComments === post._id ? null : post._id);
-            setComments(post?._id);
+            setShowComments(showComments === post._id ? null : post._id);  // toggle comments
+            getComments(post?._id);
           }}
         >
           <BiComment size={20} />
@@ -113,6 +119,19 @@ const PostCard = ({post , user , deletePost , likePost}) => {
           </div>
         )}
       </div>
+
+      {/* comments  */}
+      {showComments  == post?.id && (
+        <div className="w-full mt-4 border-t border-[#666666] pt-4 ">
+          <CommentForm
+          user = {user}
+          id={post?._id}
+          getComments={() => getComments(post?._id)}
+          />
+        </div>
+      )}
+
+
     </div>
   )
 }
