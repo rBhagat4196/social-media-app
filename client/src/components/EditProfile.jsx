@@ -5,7 +5,6 @@ import { MdClose } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import TextInput from "./TextInput";
 import Loading from "./Loading";
-import CustomButton from "./CustomButton";
 import { updateProfile } from "../redux/userSlice";
 
 const EditProfile = () => {
@@ -21,12 +20,22 @@ const EditProfile = () => {
     location : ""
   })
   const [data,setData] = useState({
-    firstName : "",
-    lastName : "",
-    profession : "",
-    location : ""
+    firstName : user?.firstName,
+    lastName : user?.lastName,
+    profession : user?.profession,
+    location : user?.location,
   })
-  const onSubmit = async (data) => {};
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if(!data.firstName || !data.lastName || !data.profession || !data.location ){
+        setErrors({
+            firstName : !data.firstName ? "First name is required " : "",
+            lastName : !data.lastName ? "Last name is required" : "",
+            profession : !data.profession ? "Profession does not match" : "",
+            location : !data.location ? "Location does not match" : ""
+        })
+    }
+  };
 
   const handleClose = () => {
     dispatch(updateProfile(false));
@@ -39,6 +48,10 @@ const EditProfile = () => {
     setData({
         ...data,
         [name] : value
+    })
+    setErrors({
+        ...errors,
+        [name] : ''
     })
   }
 
@@ -71,7 +84,7 @@ const EditProfile = () => {
             </div>
             <form
               className='px-4 sm:px-6 flex flex-col gap-3 2xl:gap-6'
-              onSubmit={onSubmit}
+              onSubmit={(e)=> onSubmit(e)}
             >
               <TextInput
                 name='firstName'
@@ -145,11 +158,11 @@ const EditProfile = () => {
                 {isSubmitting ? (
                   <Loading />
                 ) : (
-                  <CustomButton
-                    type='submit'
-                    containerStyles={`inline-flex justify-center rounded-md bg-blue px-8 py-3 text-sm font-medium text-white outline-none`}
-                    title='Submit'
-                  />
+                  <button
+                    className={`inline-flex justify-center rounded-md bg-blue px-8 py-3 text-sm font-medium text-white outline-none`}
+                  >
+                  Submit
+                  </button>
                 )}
               </div>
             </form>
