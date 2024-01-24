@@ -13,8 +13,9 @@ import  Loading from "../components/Loading"
 import { BiImages ,BiSolidVideo } from 'react-icons/bi'
 import {BsFiletypeGif} from "react-icons/bs"
 import PostCard from "../components/PostCard"
+import EditProfile from '../components/EditProfile'
 const HomePage = () => {
-  const { user } = useSelector((state) => state.user)
+  const { user ,edit } = useSelector((state) => state.user)
   const [friendRequest, setFriendRequest] = useState(requests)
   const [suggestedFriends, setSuggestedFriends] = useState(friends)
   const [post,setPost] = useState()
@@ -45,7 +46,7 @@ const HomePage = () => {
             <FriendCard friends={user?.friends} />
           </div>
           {/* center  */}
-          <div className='flex flex-1 h-full bg-primary px-4 flex-col gap-6 overflow-y-auto'>
+          <div className='flex flex-1 h-full px-4 flex-col gap-6 overflow-y-auto'>
             <form className='bg-primary px-4 rounded-lg' onSubmit={createPost}>
               <div className='w-full flex items-center gap-2 py-4 border-b border-[#666666]'>
                 <img
@@ -244,6 +245,9 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+      {edit && (
+        <EditProfile />
+      )}
     </>
   )
 }

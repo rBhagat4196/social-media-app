@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import { useSelector } from "react-redux";
 import RegisterPage  from "./pages/RegisterPage";
+import EditProfile from "./components/EditProfile";
 
 function App() {
   const { theme } = useSelector((state) => state.theme);
@@ -21,6 +22,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/editProfile" element={<EditProfile/>} />
         </Routes>
       </div>
     </>

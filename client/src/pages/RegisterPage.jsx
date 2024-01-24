@@ -40,7 +40,7 @@ const RegisterPage = () => {
     if (!formData.firstName || !formData.email || !formData.password) {
       setErrors({
         firstName: !formData.firstName ? 'First name is required' : '',
-        lastName: !formData.lastNameName ? 'Last name is required' : '',
+        lastName: !formData.lastName ? 'Last name is required' : '',
         email : !formData.email ? 'Email is required':'',
         password : !formData.password ? 'Password is required' : ''
       })

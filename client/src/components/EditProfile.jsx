@@ -35,6 +35,10 @@ const EditProfile = () => {
             location : !data.location ? "Location does not match" : ""
         })
     }
+    setIsSubmitting(true);
+    setTimeout(()=>{
+        setIsSubmitting(false)
+    },2000)
   };
 
   const handleClose = () => {
