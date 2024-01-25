@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import JWT from "jsonwebtoken";
 
 // password hashing 

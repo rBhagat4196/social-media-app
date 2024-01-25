@@ -1,12 +1,14 @@
-import Users from "../models/userModel";
-import { hashString } from "../utils";
-import { sendVerificationEmail } from "../utils/sendEmail";
+import Users from "../models/userModel.js";
+import { hashString } from "../utils/index.js";
+import { sendVerificationEmail } from "../utils/sendEmail.js";
 
 export const register = async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
 
   // validate field
+  
   if (!(firstName || lastName || email || password)) {
+    console.log("hello")
     next("Provide Required Fields"); // passes argument through next
     return;
   }
@@ -25,7 +27,7 @@ export const register = async (req, res, next) => {
       email,
       password: hashedPassword,
     });
-
+    // console.log(user)
     sendVerificationEmail(user, res);
   } catch (error) {
     console.log(error);
@@ -72,7 +74,7 @@ export const login = async (req, res, next) => {
       return;
     }
 
-    user.password = undefined;
+    user.password = undefined;   // set paasword to null for security purposes
 
     const token = createJWT(user?._id);
 
