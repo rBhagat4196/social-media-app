@@ -5,12 +5,14 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import path from "path";
 import helmet from "helmet"; // security package
+import dbConnection from "./dbConfig/index.js";
 
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+dbConnection();
 // middlewares
 app.use(helmet());
 app.use(cors());
