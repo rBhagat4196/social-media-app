@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import { requestPasswordReset, verifyEmail , resetPassword , changePassword} from "../controllers/userContoller.js";
+import { requestPasswordReset, verifyEmail , resetPassword , changePassword , getFriendRequest , acceptRequest , friendRequest } from "../controllers/userContoller.js";
 import userAuth from "../middleware/authMiddleware.js";
 import { getUser , updateUser } from "../controllers/userContoller.js";
 
@@ -15,9 +15,18 @@ router.get("/reset-password/:userId/:token",resetPassword); // verfiy info for r
 router.post("/reset-password",changePassword);   // changes the password 
 
 
-//
+// user routes
 router.post("/get-user/:id?",userAuth,getUser)
 router.put("/update-user",userAuth,updateUser);
+
+
+// friend request
+router.post("/friend-request",userAuth,friendRequest); // add request for friend
+router.post("/get-friend-request",userAuth,getFriendRequest); // get all friend request
+
+// accept/deny friend request
+router.post("/accept-request",userAuth,acceptRequest);
+
 
 
 router.get("/verified", (req, res) => {
