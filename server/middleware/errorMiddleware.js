@@ -1,4 +1,6 @@
 
+// next("some message refers to error in express") 
+// and error middle wares have four parameters , that helps compiler to identify error middlewares
 const errorMiddleware = (err, req, res, next) => {
     const defaultError = {
       statusCode: 404,

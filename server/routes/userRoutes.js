@@ -1,7 +1,8 @@
 import express from "express";
 import path from "path";
 import { requestPasswordReset, verifyEmail , resetPassword , changePassword} from "../controllers/userContoller.js";
-
+import userAuth from "../middleware/authMiddleware.js";
+import { getUser , updateUser } from "../controllers/userContoller.js";
 
 const router = express.Router();
 const __dirname = path.resolve(path.dirname(""))
@@ -12,6 +13,11 @@ router.get("/verify/:userId/:token",verifyEmail);
 router.post("/request-passwordreset",requestPasswordReset);  // request for password reset
 router.get("/reset-password/:userId/:token",resetPassword); // verfiy info for reset
 router.post("/reset-password",changePassword);   // changes the password 
+
+
+//
+router.post("/get-user/:id?",userAuth,getUser)
+router.put("/update-user",userAuth,updateUser);
 
 
 router.get("/verified", (req, res) => {
