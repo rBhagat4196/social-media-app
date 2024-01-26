@@ -296,6 +296,38 @@ export const verifyEmail = async (req, res) => {
     });
   }
 };
+
+// get all pending friend request for our user
+export const getFriendRequest = async (req, res) => {
+  try {
+    const { userId } = req.body.user;
+
+    const request = await FriendRequest.find({
+      requestTo: userId,
+      requestStatus: "Pending",
+    })
+      .populate({
+        path: "requestFrom",
+        select: "firstName lastName profileUrl profession -password",
+      })
+      .limit(10)
+      .sort({
+        _id: -1,
+      });
+
+    res.status(200).json({
+      success: true,
+      data: request,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "auth error",
+      success: false,
+      error: error.message,
+    });
+  }
+};
   
 
 
