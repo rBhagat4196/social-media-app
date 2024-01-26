@@ -70,3 +70,36 @@ export const verifyEmail = async (req, res) => {
       res.redirect(`/users/verified?message=`);
     }
   };
+
+
+  export const requestPasswordReset = async (req, res) => {
+    try {
+      const { email } = req.body;
+  
+      const user = await Users.findOne({ email });
+  
+      if (!user) {
+        return res.status(404).json({
+          status: "FAILED",
+          message: "Email address not found.",
+        });
+      }
+  
+      const existingRequest = await PasswordReset.findOne({ email });
+      if (existingRequest) {
+        if (existingRequest.expiresAt > Date.now()) {
+          return res.status(201).json({
+            status: "PENDING",
+            message: "Reset password link has already been sent tp your email.",
+          });
+        }
+        await PasswordReset.findOneAndDelete({ email });
+      }
+      await resetPasswordLink(user, res);
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({ message: error.message });
+    }
+  };
+
+  
