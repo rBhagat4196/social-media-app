@@ -6,6 +6,7 @@ import { resetPasswordLink } from "../utils/sendEmail.js";
 import { hashString } from "../utils/index.js";
 import PasswordReset from "../models/PasswordReset.js";
 
+
 export const verifyEmail = async (req, res) => {
     const { userId, token } = req.params;
 
@@ -174,6 +175,81 @@ export const verifyEmail = async (req, res) => {
     }
   };
 
+
+  export const getUser = async (req, res, next) => {
+    try {
+      const { userId } = req.body.user;
+      const { id } = req.params;
+  
+      const user = await Users.findById(id ?? userId).populate({  // populating user without selecting the password in friends
+        path: "friends",
+        select: "-password",
+      });
+  
+      if (!user) {
+        return res.status(200).send({
+          message: "User Not Found",
+          success: false,
+        });
+      }
+  
+      user.password = undefined;
+  
+      res.status(200).json({
+        success: true,
+        user: user,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        message: "auth error",
+        success: false,
+        error: error.message,
+      });
+    }
+  };
+
+
+  export const updateUser = async (req, res, next) => {
+    try {
+      const { firstName, lastName, location, profileUrl, profession } = req.body;
+  
+      if (!(firstName || lastName || contact || profession || location)) {
+        next("Please provide all required fields");
+        return;
+      }
+  
+      const { userId } = req.body.user;
+  
+      const updateUser = {
+        firstName,
+        lastName,
+        location,
+        profileUrl,
+        profession,
+        _id: userId,
+      };
+      const user = await Users.findByIdAndUpdate(userId, updateUser, {
+        new: true,
+      });
+  
+      await user.populate({ path: "friends", select: "-password" });
+      const token = createJWT(user?._id);
+  
+      user.password = undefined;
+  
+      res.status(200).json({
+        sucess: true,
+        message: "User updated successfully",
+        user,
+        token,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({ message: error.message });
+    }
+  };
+  
 
 
 
