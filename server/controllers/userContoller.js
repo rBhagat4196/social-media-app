@@ -3,6 +3,7 @@ import Verification from "../models/emailVerification.js";
 import Users from "../models/userModel.js";
 import { compareString } from "../utils/index.js";
 import { resetPasswordLink } from "../utils/sendEmail.js";
+import { hashString } from "../utils/index.js";
 
 export const verifyEmail = async (req, res) => {
     const { userId, token } = req.params;
@@ -138,6 +139,30 @@ export const verifyEmail = async (req, res) => {
         } else {
           res.redirect(`/users/resetpassword?type=reset&id=${userId}`);
         }
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({ message: error.message });
+    }
+  };
+
+  export const changePassword = async (req, res, next) => {
+    try {
+      const { userId, password } = req.body;
+  
+      const hashedpassword = await hashString(password);
+  
+      const user = await Users.findByIdAndUpdate(
+        { _id: userId },
+        { password: hashedpassword }
+      );
+  
+      if (user) {
+        await PasswordReset.findOneAndDelete({ userId });
+  
+        res.status(200).json({
+          ok: true,
+        });
       }
     } catch (error) {
       console.log(error);
