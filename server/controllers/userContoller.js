@@ -4,6 +4,7 @@ import Users from "../models/userModel.js";
 import { compareString } from "../utils/index.js";
 import { resetPasswordLink } from "../utils/sendEmail.js";
 import { hashString } from "../utils/index.js";
+import PasswordReset from "../models/PasswordReset.js";
 
 export const verifyEmail = async (req, res) => {
     const { userId, token } = req.params;
@@ -92,7 +93,7 @@ export const verifyEmail = async (req, res) => {
         if (existingRequest.expiresAt > Date.now()) {
           return res.status(201).json({
             status: "PENDING",
-            message: "Reset password link has already been sent tp your email.",
+            message: "Reset password link has already been sent to your email.",
           });
         }
         await PasswordReset.findOneAndDelete({ email });
@@ -103,6 +104,8 @@ export const verifyEmail = async (req, res) => {
       res.status(404).json({ message: error.message });
     }
   };
+
+
 
   export const resetPassword = async (req, res) => {
     const { userId, token } = req.params;
@@ -146,6 +149,7 @@ export const verifyEmail = async (req, res) => {
     }
   };
 
+  
   export const changePassword = async (req, res, next) => {
     try {
       const { userId, password } = req.body;

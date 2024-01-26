@@ -14,7 +14,7 @@ const __dirname = path.resolve(path.dirname(""));
 dotenv.config();
 const app = express();
 app.use(express.static(path.join(__dirname, "views/build")));
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8800;
 dbConnection();
 // middlewares
 app.use(helmet());
