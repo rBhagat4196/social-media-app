@@ -47,9 +47,9 @@ export const login = async (req, res, next) => {
     }
 
     // find user by email
-    const user = await Users.findOne({ email });
-    //   .select("+password").
-    populate({
+    const user = await Users.findOne({ email })
+      .select("+password")
+    .populate({
       path: "friends",
       select: "firstName lastName location profileUrl -password",
     });
@@ -61,7 +61,7 @@ export const login = async (req, res, next) => {
 
     if (!user?.verified) {
       next(
-        "User email is not verified. Check your email account and verify your email"
+        "User email is not verified. Check your email account and please verify the email"
       );
       return;
     }

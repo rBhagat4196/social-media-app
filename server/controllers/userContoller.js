@@ -5,7 +5,7 @@ import { compareString } from "../utils/index.js";
 
 export const verifyEmail = async (req, res) => {
     const { userId, token } = req.params;
-  
+
     try {
       const result = await Verification.findOne({ userId });
   

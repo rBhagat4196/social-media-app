@@ -19,7 +19,7 @@ export const sendVerificationEmail = async(user,res)=>{
     const {_id,email,lastName} = user;
     const token = _id+uuidv4();
 
-    const link = APP_URL+"user/verify/"+_id+"/"+token;
+    const link = APP_URL+"users/verify/"+_id+"/"+token;
 
     // mail options
     const mailOptions = {

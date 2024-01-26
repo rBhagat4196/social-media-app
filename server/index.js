@@ -10,10 +10,11 @@ import errorMiddleware from "./middleware/errorMiddleware.js";
 import router from "./routes/index.js";
 
 
+const __dirname = path.resolve(path.dirname(""));
 dotenv.config();
 const app = express();
+app.use(express.static(path.join(__dirname, "views/build")));
 const PORT = process.env.PORT || 5000;
-
 dbConnection();
 // middlewares
 app.use(helmet());
@@ -23,10 +24,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
-app.use(errorMiddleware)
 
 // routes
 app.use(router);
+
+// middlewares handles error message if router return some error , it just format the error into proper message
+app.use(errorMiddleware)
 
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`);
