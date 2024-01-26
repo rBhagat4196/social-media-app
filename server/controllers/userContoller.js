@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Verification from "../models/emailVerification.js";
 import Users from "../models/userModel.js";
 import { compareString } from "../utils/index.js";
+import { resetPasswordLink } from "../utils/sendEmail.js";
 
 export const verifyEmail = async (req, res) => {
     const { userId, token } = req.params;
@@ -102,6 +103,48 @@ export const verifyEmail = async (req, res) => {
     }
   };
 
-
+  export const resetPassword = async (req, res) => {
+    const { userId, token } = req.params;
   
+    try {
+      // find record
+      const user = await Users.findById(userId);
+  
+      if (!user) {
+        const message = "Invalid password reset link. Try again";
+        res.redirect(`/users/resetpassword?status=error&message=${message}`);
+      }
+  
+      const resetPassword = await PasswordReset.findOne({ userId });
+  
+      if (!resetPassword) {
+        const message = "Invalid password reset link. Try again";
+        return res.redirect(
+          `/users/resetpassword?status=error&message=${message}`
+        );
+      }
+  
+      const { expiresAt, token: resetToken } = resetPassword;
+  
+      if (expiresAt < Date.now()) {
+        const message = "Reset Password link has expired. Please try again";
+        res.redirect(`/users/resetpassword?status=error&message=${message}`);
+      } else {
+        const isMatch = await compareString(token, resetToken);
+  
+        if (!isMatch) {
+          const message = "Invalid reset password link. Please try again";
+          res.redirect(`/users/resetpassword?status=error&message=${message}`);
+        } else {
+          res.redirect(`/users/resetpassword?type=reset&id=${userId}`);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      res.status(404).json({ message: error.message });
+    }
+  };
+
+
+
 
