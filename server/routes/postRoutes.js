@@ -1,26 +1,36 @@
 import express from "express";
-import userAuth from "../middleware/authMiddleware.js"
-import { createPost ,getPosts ,getPost , getUserPost , getComments, likePost, commentPost, replyPostComment, deletePost} from "../controllers/postController.js";
+import userAuth from "../middleware/authMiddleware.js";
+import {
+  createPost,
+  getPosts,
+  getPost,
+  getUserPost,
+  getComments,
+  likePost,
+  commentPost,
+  replyPostComment,
+  deletePost,
+  likePostComment,
+} from "../controllers/postController.js";
 
-const router = express.Router()
-
+const router = express.Router();
 
 // create post
-router.post("/create-post",userAuth,createPost)
-// get posts with seach 
-router.post("/",userAuth,getPosts);
-router.post("/post/:id",userAuth, getPost);
-router.post("/get-user-post/:id",userAuth, getUserPost);
+router.post("/create-post", userAuth, createPost);
+// get posts with seach
+router.post("/", userAuth, getPosts);
+router.post("/post/:id", userAuth, getPost);
+router.post("/get-user-post/:id", userAuth, getUserPost);
 
 // get comments
-router.post("/comments/:postId",getComments)
-// likes 
-router.post("like/:id",userAuth,likePost);
-router.post("/like-comment/:id/:rid?",userAuth,likePostComment)
+router.post("/comments/:postId", getComments);
+// likes
+router.post("like/:id", userAuth, likePost);
+router.post("/like-comment/:id/:rid?", userAuth, likePostComment);
 // post comments / reply
-router.post("comment/:id",userAuth,commentPost);
-router.post("reply-comment/:id",userAuth,replyPostComment);
+router.post("comment/:id", userAuth, commentPost);
+router.post("reply-comment/:id", userAuth, replyPostComment);
 
 // delete post
-router.delete("/:id",userAuth,deletePost)
-export default router
+router.delete("/:id", userAuth, deletePost);
+export default router;

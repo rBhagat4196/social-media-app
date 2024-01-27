@@ -8,9 +8,9 @@ export const register = async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
 
   // validate field
-  
+
   if (!(firstName || lastName || email || password)) {
-    console.log("hello")
+    console.log("hello");
     next("Provide Required Fields"); // passes argument through next
     return;
   }
@@ -49,9 +49,7 @@ export const login = async (req, res, next) => {
     }
 
     // find user by email
-    const user = await Users.findOne({ email })
-      .select("+password")
-    .populate({
+    const user = await Users.findOne({ email }).select("+password").populate({
       path: "friends",
       select: "firstName lastName location profileUrl -password",
     });
@@ -76,7 +74,7 @@ export const login = async (req, res, next) => {
       return;
     }
 
-    user.password = undefined;   // set paasword to null for security purposes
+    user.password = undefined; // set paasword to null for security purposes
 
     const token = createJWT(user?._id);
 

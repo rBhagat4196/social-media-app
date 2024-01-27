@@ -9,7 +9,7 @@ import {
   acceptRequest,
   friendRequest,
   suggestedFriends,
-  profileViews
+  profileViews,
 } from "../controllers/userContoller.js";
 import userAuth from "../middleware/authMiddleware.js";
 import { getUser, updateUser } from "../controllers/userContoller.js";
@@ -40,7 +40,6 @@ router.post("/profile-view", userAuth, profileViews);
 
 // suggested friend request
 router.post("/suggested-friends", userAuth, suggestedFriends);
-
 
 // email authentication
 

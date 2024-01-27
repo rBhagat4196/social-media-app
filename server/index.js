@@ -9,7 +9,6 @@ import dbConnection from "./dbConfig/index.js";
 import errorMiddleware from "./middleware/errorMiddleware.js";
 import router from "./routes/index.js";
 
-
 const __dirname = path.resolve(path.dirname(""));
 dotenv.config();
 const app = express();
@@ -29,7 +28,7 @@ app.use(morgan("dev"));
 app.use(router);
 
 // middlewares handles error message if router return some error , it just format the error into proper message
-app.use(errorMiddleware)
+app.use(errorMiddleware);
 
 app.listen(PORT, () => {
   console.log(`Server running on port: ${PORT}`);
