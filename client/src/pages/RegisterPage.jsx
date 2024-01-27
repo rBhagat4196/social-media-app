@@ -7,6 +7,7 @@ import { ImConnection } from 'react-icons/im'
 import TextInput from '../components/TextInput'
 import Loading from '../components/Loading'
 import BgImage from '../assets/bg-image.webp'
+import { apiRequest } from '../../utils'
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
     firstName: '',
@@ -17,7 +18,7 @@ const RegisterPage = () => {
 
   const [errors, setErrors] = useState({
     firstName: '',
-    lastName:'',
+    lastName: '',
     email: '',
     password: '',
   })
@@ -41,16 +42,33 @@ const RegisterPage = () => {
       setErrors({
         firstName: !formData.firstName ? 'First name is required' : '',
         lastName: !formData.lastName ? 'Last name is required' : '',
-        email : !formData.email ? 'Email is required':'',
-        password : !formData.password ? 'Password is required' : ''
+        email: !formData.email ? 'Email is required' : '',
+        password: !formData.password ? 'Password is required' : '',
       })
+      return;
     }
 
     setIsSubmitting(true)
+    try {
+      const res = await apiRequest({
+        url: '/auth/register',
+        data: formData,
+        method: 'POST',
+      });
 
-    setTimeout(() => {
+      if(res?.status == "failed"){
+        setErrors(res);
+      }else{
+        setErrors(res);
+        setTimeout(()=>{
+          window.location.replace("/login");
+        },5000)
+      }
       setIsSubmitting(false)
-    }, 2000)
+    } catch (e) {
+      console.log(e);
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -158,7 +176,7 @@ const RegisterPage = () => {
         <div className='hidden w-1/2 h-full lg:flex flex-col items-center justify-center bg-blue'>
           <div className='relative w-full flex items-center justify-center'>
             <img
-              src={BgImage} 
+              src={BgImage}
               alt='Bg Image'
               className='w-48 2xl:w-64 h-48 2xl:h-64 rounded-full object-cover'
             />
