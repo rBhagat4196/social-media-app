@@ -78,8 +78,8 @@ export const verifyEmail = async (req, res) => {
 
 export const requestPasswordReset = async (req, res) => {
   try {
-    const { email } = req.body;
-
+    const {email}  = req.body;
+    console.log(email)
     const user = await Users.findOne({ email });
 
     if (!user) {
@@ -147,6 +147,7 @@ export const resetPassword = async (req, res) => {
     res.status(404).json({ message: error.message });
   }
 };
+
 
 export const changePassword = async (req, res, next) => {
   try {
