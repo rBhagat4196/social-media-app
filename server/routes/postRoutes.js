@@ -19,17 +19,17 @@ const router = express.Router();
 router.post("/create-post", userAuth, createPost);
 // get posts with seach
 router.post("/", userAuth, getPosts);
-router.post("/post/:id", userAuth, getPost);
+router.post("/:id", userAuth, getPost);
 router.post("/get-user-post/:id", userAuth, getUserPost);
 
 // get comments
 router.post("/comments/:postId", getComments);
 // likes
-router.post("like/:id", userAuth, likePost);
+router.post("/like/:id", userAuth, likePost);
 router.post("/like-comment/:id/:rid?", userAuth, likePostComment);
 // post comments / reply
-router.post("comment/:id", userAuth, commentPost);
-router.post("reply-comment/:id", userAuth, replyPostComment);
+router.post("/comment/:id", userAuth, commentPost);
+router.post("/reply-comment/:id", userAuth, replyPostComment);
 
 // delete post
 router.delete("/:id", userAuth, deletePost);
