@@ -41,6 +41,9 @@ router.post("/profile-view", userAuth, profileViews);
 // suggested friend request
 router.post("/suggested-friends", userAuth, suggestedFriends);
 
+
+// email authentication
+
 router.get("/verified", (req, res) => {
   res.sendFile(path.join(__dirname, "./views/build", "index.html"));
 });
