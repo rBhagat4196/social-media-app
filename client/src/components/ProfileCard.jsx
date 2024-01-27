@@ -17,8 +17,6 @@ import {
 import { CiLocationOn } from 'react-icons/ci'
 const ProfileCard = ({ user }) => {
   const { user: data, edit } = useSelector((state) => state.user)
-    console.log(user)
-    console.log(data)
   const dispatch = useDispatch()
   return (
     <div>

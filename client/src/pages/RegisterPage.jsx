@@ -9,6 +9,7 @@ import Loading from '../components/Loading'
 import BgImage from '../assets/bg-image.webp'
 import { apiRequest } from '../../utils'
 const RegisterPage = () => {
+  const [errMsg, setErrMsg] = useState("");
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -56,15 +57,20 @@ const RegisterPage = () => {
         method: 'POST',
       });
 
-      if(res?.status == "failed"){
-        setErrors(res);
-      }else{
-        setErrors(res);
+      if(res?.status === "failed"){
+        setErrMsg(res);
+      }
+      else if (res?.status === "pending"){
+        setErrMsg(res);
+      }
+      else{
+        setErrMsg(res);
         setTimeout(()=>{
           window.location.replace("/login");
         },5000)
       }
-      setIsSubmitting(false)
+      setIsSubmitting(false);
+      // console.log(errMsg)
     } catch (e) {
       console.log(e);
       setIsSubmitting(false)
@@ -148,6 +154,17 @@ const RegisterPage = () => {
               />
             </div>
 
+            {errMsg?.message && (
+              <span
+                className={`text-sm ${
+                  errMsg?.status == "failed"
+                    ? "text-[#f64949fe]"
+                    : "text-[#2ba150fe]"
+                } mt-0.5`}
+              >
+                {errMsg?.message}
+              </span>
+            )}
             {/* Submit Button */}
             {isSubmitting ? (
               <Loading />

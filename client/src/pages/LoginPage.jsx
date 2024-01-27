@@ -9,6 +9,8 @@ import TextInput from "../components/TextInput";
 import Loading from "../components/Loading";
 import BgImage from "../assets/bg-image.webp";
 import {useDispatch} from "react-redux"
+import { apiRequest } from "../../utils";
+import { login } from "../redux/userSlice";
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -41,15 +43,34 @@ const LoginPage = () => {
       setErrors({
         email : !formData.email ? 'Email is required':'',
         password : !formData.password ? 'Password is required' : ''
-      })
+      });
+      return;
     }
 
     // console.log(errors)
-    setIsSubmitting(true);
-  
-      setTimeout(() => {
-      setIsSubmitting(false);
-    }, 2000);
+    try{
+      setIsSubmitting(true);
+      const res = await apiRequest({
+        url : "/auth/login",
+        data : formData,
+        method : "POST",
+      });
+      if(res?.status === "failed"){
+        setErrMsg(res);
+      }
+      else{
+        setErrMsg("");
+        const newData = {token : res?.token , ...res?.user};
+        dispatch(login(newData));
+        window.location.replace("/");
+      }
+      setIsSubmitting(false)
+    }catch(error){
+      console.log(error)
+      setIsSubmitting(false)
+
+    }
+   
   };
   
 
