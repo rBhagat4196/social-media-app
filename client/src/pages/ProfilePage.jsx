@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import TopBar from "../components/TopBar";
@@ -7,18 +7,43 @@ import Loading from "../components/Loading";
 import ProfileCard from "../components/ProfileCard";
 import FriendsCard from "../components/FriendCard";
 import PostCard from "../components/PostCard";
-import { posts } from "../assets/userInfo";
+import { getPost } from "../../../server/controllers/postController";
+import { deletePost, fetchPosts, getUserInfo, likePost } from "../../utils";
+
 
 const Profile = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.user);
-  // const { posts } = useSelector((state) => state.posts);
+  const { posts } = useSelector((state) => state.posts);
   const [userInfo, setUserInfo] = useState(user);
   const [loading, setLoading] = useState(false);
+  const uri = "/posts/get-user-post/"+id;
+  const handleDelete = async(id) => {
+    await deletePost(id, user?.token)
+    await getPosts();
+  };
 
-  const handleDelete = () => {};
-  const handleLikePost = () => {};
+
+ const handleLike = async(uri)=>{
+    // console.log(uri)
+    await likePost({uri : uri , token : user?.token});
+    await getPosts()
+  }
+
+  const getUser = async ()=>{
+    const res = await getUserInfo(user?.token,id);
+    setUserInfo(res);
+  }
+  const getPosts = async()=>{
+    await fetchPosts(user?.token,dispatch,uri);
+    setLoading(false);
+  }
+  useEffect(()=>{
+    setLoading(true);
+    getUser();
+    getPosts();
+  },[id])
 
   return (
     <>
@@ -45,7 +70,7 @@ const Profile = () => {
                   key={post?._id}
                   user={user}
                   deletePost={handleDelete}
-                  likePost={handleLikePost}
+                  likePost={handleLike}
                 />
               ))
             ) : (
