@@ -28,8 +28,8 @@ router.post("/comments/:postId", getComments);
 router.post("/like/:id", userAuth, likePost);
 router.post("/like-comment/:id/:rid?", userAuth, likePostComment);
 // post comments / reply
-router.post("/comment/:id", userAuth, commentPost);
-router.post("/reply-comment/:id", userAuth, replyPostComment);
+router.post("/comment/:id", userAuth, commentPost); // push comment
+router.post("/reply-comment/:id", userAuth, replyPostComment); // push reply comment
 
 // delete post
 router.delete("/:id", userAuth, deletePost);

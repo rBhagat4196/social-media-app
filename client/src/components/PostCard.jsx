@@ -10,6 +10,7 @@ import CommentForm from './CommentForm'
 import { postComments } from '../assets/userInfo'
 import Loading from './Loading'
 import ReplyCard from './ReplyCard'
+import { apiRequest } from '../../utils'
 const PostCard = ({ post, user, deletePost, likePost }) => {
   const [showAll, setShowAll] = useState(0)
   const [showReply, setShowReply] = useState(0)
@@ -17,9 +18,22 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
   const [loading, setLoading] = useState(false)
   const [replyComments, setReplyComments] = useState(0)
   const [showComments, setShowComments] = useState(0)
-  const getComments = async () => {
+  const getPostComments = async(id)=>{
+    try{
+      const res = await apiRequest({
+        url : "/posts/comments/"+id,
+        method : "POST",
+      })
+
+      return res?.data;
+    }catch(err){
+      console.log(err)
+    }
+  }
+  const getComments = async (id) => {
     setReplyComments(0)
-    setComments(postComments)
+    const result = await getPostComments(id);
+    setComments(result);
     setLoading(false)
   }
   const handleLike = async(uri)=>{
@@ -27,6 +41,7 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
     await likePost(uri);
     await getComments(post?._id)
   }
+  
   return (
     <div className='mb-2 bg-primary p-4 rounded-xl'>
       {/* profile image , name  */}

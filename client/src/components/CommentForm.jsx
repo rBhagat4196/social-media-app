@@ -5,6 +5,7 @@ import TextInput from "./TextInput";
 import NoProfile from '../assets/userprofile.png'
 import { useState } from "react";
 import Loading from "./Loading";
+import { apiRequest } from "../../utils";
 
 const CommentForm = ({ user, id, replyAt, getComments }) => {
   const [loading, setLoading] = useState(false);
@@ -12,15 +13,39 @@ const CommentForm = ({ user, id, replyAt, getComments }) => {
   const [comment, setComment] = useState("");
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault()
     if (!comment) {
       setError("Write something");
+      return;
     }
-    setLoading(true)
-    setTimeout(() => {
-        setLoading(false)
-      }, 2000)
+    setLoading(true);
+    setErrMsg("");
+
+    try{
+      const URL = !replyAt ? "/posts/comment/"+id : "posts/reply-comment/"+id;
+      const newData = {
+        comment : comment,
+        from : user?.firstName + " "+user?.lastName,
+        replyAt : replyAt,
+      }
+      const res = await apiRequest({
+        data : newData,
+        token : user?.token,
+        method : "POST",
+        url : URL,
+      })
+      if(res?.status === "failed"){
+        setErrMsg(res);
+      }else{
+        setComment("");
+        await getComments();
+      }
+      setLoading(false);
+    }catch(err){
+      console.log(err);
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
