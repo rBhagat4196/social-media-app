@@ -64,7 +64,7 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
             <span className='text-ascent-2'>{post?.userId?.location}</span>
           </div>
 
-          <span className='text-ascent-2'>
+          <span className='hidden md:flex text-ascent-2'>
             {moment(post?.createdAt ?? '2023-05-25').fromNow()}
           </span>
         </div>

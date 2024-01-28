@@ -6,6 +6,7 @@ import TextInput from "./TextInput";
 import { setTheme } from "../redux/themeSlice";
 import { logout } from "../redux/userSlice";
 import { BsMoon , BsSunFill } from "react-icons/bs";
+import {fetchPosts} from "../../utils/index"
 const TopBar = () => {
   const { theme } = useSelector((state) => state.theme);
   const { user } = useSelector((state) => state.user);
@@ -19,9 +20,10 @@ const TopBar = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    // Handle search logic here
-    console.log("Search:", search);
+     await fetchPosts(user?.token , dispatch , "",{search});
+    
   };
+
 
   return (
     <div className="topbar w-full flex items-center justify-between py-3 md:py-6 px-4 bg-primary">
@@ -34,7 +36,7 @@ const TopBar = () => {
         </span>
       </Link>
 
-      <form className="hidden md:flex items-center justify-center" onSubmit={handleSearch}>
+      <form className="hidden md:flex items-center justify-center" onSubmit={(e) => handleSearch(e)}>
         <TextInput
           placeholder="Search..."
           styles="w-[18rem] lg:w-[38rem]  rounded-l-full py-3"

@@ -33,12 +33,11 @@ export const getPosts = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
     const { search } = req.body;
-
+    
     const user = await Users.findById(userId);
-    const friends = user?.friends?.toString().split(",") ?? []; // covert friends array intp array of string
+    const friends = user?.friends?.toString().split(",") ?? []; 
     friends.push(userId);
 
-    // this search query get post of our friends and our post only
     const searchPostQuery = {
       $or: [
         {
