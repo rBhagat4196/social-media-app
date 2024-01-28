@@ -3,91 +3,147 @@ import { useDispatch, useSelector } from 'react-redux'
 import TopBar from '../components/TopBar'
 import ProfileCard from '../components/ProfileCard'
 import FriendCard from '../components/FriendCard'
-import { friends, requests } from '../assets/userInfo'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import NoProfile from '../assets/userprofile.png'
 import { BsPersonFillAdd } from 'react-icons/bs'
 import TextInput from '../components/TextInput'
-import  Loading from "../components/Loading"
-import { BiImages ,BiSolidVideo } from 'react-icons/bi'
-import {BsFiletypeGif} from "react-icons/bs"
-import PostCard from "../components/PostCard"
+import Loading from '../components/Loading'
+import { BiImages, BiSolidVideo } from 'react-icons/bi'
+import { BsFiletypeGif } from 'react-icons/bs'
+import PostCard from '../components/PostCard'
 import EditProfile from '../components/EditProfile'
-import {apiRequest, handleFileUpload , fetchPosts, likePost, deletePost} from "../../utils/index"
+import {
+  apiRequest,
+  handleFileUpload,
+  fetchPosts,
+  likePost,
+  deletePost,
+  sendFriendRequest,
+  getUserInfo,
+} from '../../utils/index'
+import { login } from '../redux/userSlice'
 const HomePage = () => {
-  const { user ,edit } = useSelector((state) => state.user)
-  const [friendRequest, setFriendRequest] = useState(requests)
-  const [suggestedFriends, setSuggestedFriends] = useState(friends)
-  const [post,setPost] = useState("")
-  const [error,setError] = useState("");
-  const [errMsg, setErrMsg] = useState("");
-  const [posting,setPosting] = useState(false);
-  const [file,setFile] = useState(null);
-  const [loading,setLoading] = useState(false);
-  const {posts} = useSelector((state) => state.posts);
-  const dispatch = useDispatch();
-  const handleInputChange = (e)=>{
-    setPost(e.target.value);
-    setError("")
+  const { user, edit } = useSelector((state) => state.user)
+  const [friendRequest, setFriendRequest] = useState([])
+  const [suggestedFriends, setSuggestedFriends] = useState([])
+  const [post, setPost] = useState('')
+  const [error, setError] = useState('')
+  const [errMsg, setErrMsg] = useState('')
+  const [posting, setPosting] = useState(false)
+  const [file, setFile] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const { posts } = useSelector((state) => state.posts)
+  const dispatch = useDispatch()
+  const handleInputChange = (e) => {
+    setPost(e.target.value)
+    setError('')
   }
-  const createPost = async (e)=>{
-    e.preventDefault();
-    if(!post){
-      setError("Description is needed !");
-      return;
+  const createPost = async (e) => {
+    e.preventDefault()
+    if (!post) {
+      setError('Description is needed !')
+      return
     }
-    setPosting(true);
-    setErrMsg("")
-    try{
-      const uri = file && (await handleFileUpload(file));
-      console.log(uri);
-      const newData = uri ? { description : post , image : uri } : {description : post};
+    setPosting(true)
+    setErrMsg('')
+    try {
+      const uri = file && (await handleFileUpload(file))
+      console.log(uri)
+      const newData = uri
+        ? { description: post, image: uri }
+        : { description: post }
       const res = await apiRequest({
-        url : "/posts/create-post",
-        data : newData,
-        token : user?.token,
-        method : "POST"
+        url: '/posts/create-post',
+        data: newData,
+        token: user?.token,
+        method: 'POST',
       })
-      if(res?.status === "failed"){
-        setErrMsg(res);
-      }else{
-        setPost("");
+      if (res?.status === 'failed') {
+        setErrMsg(res)
+      } else {
+        setPost('')
         setFile(null)
         setLoading(true)
-        await fetchPost();
+        await fetchPost()
       }
-      setPosting(false);
-    }catch(e){
-      console.log(e);
+      setPosting(false)
+    } catch (e) {
+      console.log(e)
     }
   }
 
-  const fetchPost = async()=>{
-    await fetchPosts(user?.token,dispatch);
-    setLoading(false);
-  };
-  const handleLikePost =  async (uri)=>{
-    await likePost({uri : uri , token : user?.token});
-    await fetchPost();
-  };
-  const handleDelete =  async (id)=>{
-    await deletePost(id,user?.token);
-    await fetchPost();
+  const fetchPost = async () => {
+    await fetchPosts(user?.token, dispatch)
+    setLoading(false)
+  }
+  const handleLikePost = async (uri) => {
+    await likePost({ uri: uri, token: user?.token })
+    await fetchPost()
+  }
+  const handleDelete = async (id) => {
+    await deletePost(id, user?.token)
+    await fetchPost()
     // console.log("deleted")
-  };
-  const fetchFriendRequest =  async ()=>{};
-  const fetchSuggestedFriends =  async ()=>{};
-  const handleFriendRequest =  async ()=>{};
-  const acceptFriendRequest =  async ()=>{};
-  const getUser =  async ()=>{};
-  useEffect(()=>{
-    setLoading(true);
-    getUser();
-    fetchPost();
-    fetchFriendRequest();
-    fetchSuggestedFriends();
-  },[]);
+  }
+  const fetchFriendRequest = async () => {
+    try {
+      const res = await apiRequest({
+        url: '/users/get-friend-request',
+        token: user?.token,
+        method: 'POST',
+      })
+      setFriendRequest(res?.data)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+  const fetchSuggestedFriends = async () => {
+    try {
+      const res = await apiRequest({
+        url: '/users/suggested-friends',
+        token: user?.token,
+        method: 'POST',
+      })
+      setSuggestedFriends(res?.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const handleFriendRequest = async (id) => {
+    try {
+      const res = await sendFriendRequest(user?.token, id)
+      await fetchSuggestedFriends()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const acceptFriendRequest = async (id, status) => {
+    try {
+      const res = apiRequest({
+        url: '/users/accept-request',
+        token: user?.token,
+        method: 'POST',
+        data: { rid: id, status },
+      })
+      setFriendRequest(res?.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getUser = async () => {
+    const res = await getUserInfo(user?.token);
+    const newData = {token : user?.token , ...res};
+    dispatch(login(newData))
+  }
+  useEffect(() => {
+    setLoading(true)
+    getUser()
+    fetchPost()
+    fetchFriendRequest()
+    fetchSuggestedFriends()
+  }, [])
   return (
     <>
       <div className='w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
@@ -101,7 +157,10 @@ const HomePage = () => {
           </div>
           {/* center  */}
           <div className='flex flex-1 h-full px-4 flex-col gap-6 overflow-y-auto'>
-            <form className='bg-primary px-4 rounded-lg' onSubmit={(e) => createPost(e)}>
+            <form
+              className='bg-primary px-4 rounded-lg'
+              onSubmit={(e) => createPost(e)}
+            >
               <div className='w-full flex items-center gap-2 py-4 border-b border-[#666666]'>
                 <img
                   src={user?.profileUrl ?? NoProfile}
@@ -109,27 +168,27 @@ const HomePage = () => {
                   className='w-14 h-14 object-cover rounded-full'
                 />
                 <TextInput
-                styles='w-full rounded-full py-5'
-                placeholder='Unleash your creativity, share your insights !'
-                name='description'
-                value={post}
-                onChange={handleInputChange}
-                onKeyDown={createPost}
-                error={error}
+                  styles='w-full rounded-full py-5'
+                  placeholder='Unleash your creativity, share your insights !'
+                  name='description'
+                  value={post}
+                  onChange={handleInputChange}
+                  onKeyDown={createPost}
+                  error={error}
                 />
               </div>
               {errMsg?.message && (
-              <span
-                className={`text-sm ${
-                  errMsg?.status == "failed"
-                    ? "text-[#f64949fe]"
-                    : "text-[#2ba150fe]"
-                } mt-0.5`}
-              >
-                {errMsg?.message}
-              </span>
-            )}
-            <div className='flex items-center justify-between py-4'>
+                <span
+                  className={`text-sm ${
+                    errMsg?.status == 'failed'
+                      ? 'text-[#f64949fe]'
+                      : 'text-[#2ba150fe]'
+                  } mt-0.5`}
+                >
+                  {errMsg?.message}
+                </span>
+              )}
+              <div className='flex items-center justify-between py-4'>
                 <label
                   htmlFor='imgUpload'
                   className='flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer'
@@ -242,10 +301,16 @@ const HomePage = () => {
                       </div>
                     </Link>
                     <div className='flex gap-1'>
-                      <button className='bg-[#044444] text-xs text-white px-1 py-1 rounded full'>
+                      <button
+                        className='bg-[#044444] text-xs text-white px-1 py-1 rounded full'
+                        onClick={() => acceptFriendRequest(_id, 'Accepted')}
+                      >
                         Accept
                       </button>
-                      <button className='bg-[#044444] text-xs text-white px-1 py-1 rounded full'>
+                      <button
+                        className='bg-[#044444] text-xs text-white px-1 py-1 rounded full'
+                        onClick={() => acceptFriendRequest(_id, 'Accepted')}
+                      >
                         Deny
                       </button>
                     </div>
@@ -287,7 +352,7 @@ const HomePage = () => {
                     <div className='flex gap-1'>
                       <button
                         className='bg-[#0444a430] text-sm text-white p-1 rounded'
-                        onClick={() => {}}
+                        onClick={() => handleFriendRequest(friend?._id)}
                       >
                         <BsPersonFillAdd size={20} className='text-[#0f52b6]' />
                       </button>
@@ -299,9 +364,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-      {edit && (
-        <EditProfile />
-      )}
+      {edit && <EditProfile />}
     </>
   )
 }
