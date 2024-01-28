@@ -2,18 +2,14 @@
 /* eslint-disable no-unused-vars */
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { CgProfile } from 'react-icons/cg'
 import NoProfile from '../assets/userprofile.png'
 import { LiaEditSolid } from 'react-icons/lia'
 import { updateProfile } from '../redux/userSlice'
-import {FaTwitterSquare} from "react-icons/fa"
-import moment from "moment"
-import {
-  BsBriefcase,
-  BsFacebook,
-  BsInstagram,
-  BsPersonFillAdd,
-} from 'react-icons/bs'
+import { FaLinkedin } from 'react-icons/fa'
+import { SiGithub } from 'react-icons/si'
+import { SiGeeksforgeeks } from 'react-icons/si'
+import moment from 'moment'
+import { BsBriefcase, BsPersonFillAdd } from 'react-icons/bs'
 import { CiLocationOn } from 'react-icons/ci'
 const ProfileCard = ({ user }) => {
   const { user: data, edit } = useSelector((state) => state.user)
@@ -82,21 +78,43 @@ const ProfileCard = ({ user }) => {
             </span>
           </div>
           <div className='w-full flex flex-col gap-4 py-4 pb-6'>
-          <p className='text-ascent-1 text-lg font-semibold'>Social Profile</p>
+            <p className='text-ascent-1 text-lg font-semibold'>
+              Social Profile
+            </p>
 
-          <div className='flex gap-2 items-center text-ascent-2'>
-            <BsInstagram className=' text-xl text-ascent-1' />
-            <span>Instagram</span>
+            <a
+              href='https://github.com/rBhagat4196/social-media-app'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              <div className='flex gap-2 items-center text-ascent-2'>
+                <SiGithub className=' text-xl text-ascent-1' />
+                <span>GitHub</span>
+              </div>
+            </a>
+
+            <a
+              href='https://www.linkedin.com/in/dev-rahulb/'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              <div className='flex gap-2 items-center text-ascent-2'>
+                <FaLinkedin className=' text-xl text-ascent-1' />
+                <span>Linkedin</span>
+              </div>
+            </a>
+
+            <a
+              href='https://auth.geeksforgeeks.org/user/rahulbhagat13slr/practice'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              <div className='flex gap-2 items-center text-ascent-2'>
+                <SiGeeksforgeeks className=' text-xl text-ascent-1' />
+                <span>GeeskForGeeks</span>
+              </div>
+            </a>
           </div>
-          <div className='flex gap-2 items-center text-ascent-2'>
-            <FaTwitterSquare className=' text-xl text-ascent-1' />
-            <span>Twitter</span>
-          </div>
-          <div className='flex gap-2 items-center text-ascent-2'>
-            <BsFacebook className=' text-xl text-ascent-1' />
-            <span>Facebook</span>
-          </div>
-        </div>
         </div>
       </div>
     </div>
