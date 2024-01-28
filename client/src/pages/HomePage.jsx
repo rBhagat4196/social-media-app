@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import TopBar from '../components/TopBar'
 import ProfileCard from '../components/ProfileCard'
 import FriendCard from '../components/FriendCard'
-import { friends, requests , posts} from '../assets/userInfo'
-import { useState } from 'react'
+import { friends, requests } from '../assets/userInfo'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import NoProfile from '../assets/userprofile.png'
 import { BsPersonFillAdd } from 'react-icons/bs'
@@ -14,26 +14,80 @@ import { BiImages ,BiSolidVideo } from 'react-icons/bi'
 import {BsFiletypeGif} from "react-icons/bs"
 import PostCard from "../components/PostCard"
 import EditProfile from '../components/EditProfile'
+import {apiRequest, handleFileUpload , fetchPosts, likePost, deletePost} from "../../utils/index"
 const HomePage = () => {
   const { user ,edit } = useSelector((state) => state.user)
   const [friendRequest, setFriendRequest] = useState(requests)
   const [suggestedFriends, setSuggestedFriends] = useState(friends)
-  const [post,setPost] = useState()
+  const [post,setPost] = useState("")
   const [error,setError] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [posting,setPosting] = useState(false);
   const [file,setFile] = useState(null);
-  const [loading,setLoading] = useState(false)
+  const [loading,setLoading] = useState(false);
+  const {posts} = useSelector((state) => state.posts);
+  const dispatch = useDispatch();
   const handleInputChange = (e)=>{
     setPost(e.target.value);
     setError("")
   }
-  const createPost = (e)=>{
+  const createPost = async (e)=>{
     e.preventDefault();
     if(!post){
-      setError("Message is Required")
+      setError("Description is needed !");
+      return;
+    }
+    setPosting(true);
+    setErrMsg("")
+    try{
+      const uri = file && (await handleFileUpload(file));
+      console.log(uri);
+      const newData = uri ? { description : post , image : uri } : {description : post};
+      const res = await apiRequest({
+        url : "/posts/create-post",
+        data : newData,
+        token : user?.token,
+        method : "POST"
+      })
+      if(res?.status === "failed"){
+        setErrMsg(res);
+      }else{
+        setPost("");
+        setFile(null)
+        setLoading(true)
+        await fetchPost();
+      }
+      setPosting(false);
+    }catch(e){
+      console.log(e);
     }
   }
+
+  const fetchPost = async()=>{
+    await fetchPosts(user?.token,dispatch);
+    setLoading(false);
+  };
+  const handleLikePost =  async (uri)=>{
+    await likePost({uri : uri , token : user?.token});
+    await fetchPost();
+  };
+  const handleDelete =  async (id)=>{
+    await deletePost(id,user?.token);
+    await fetchPost();
+    // console.log("deleted")
+  };
+  const fetchFriendRequest =  async ()=>{};
+  const fetchSuggestedFriends =  async ()=>{};
+  const handleFriendRequest =  async ()=>{};
+  const acceptFriendRequest =  async ()=>{};
+  const getUser =  async ()=>{};
+  useEffect(()=>{
+    setLoading(true);
+    getUser();
+    fetchPost();
+    fetchFriendRequest();
+    fetchSuggestedFriends();
+  },[]);
   return (
     <>
       <div className='w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
@@ -47,7 +101,7 @@ const HomePage = () => {
           </div>
           {/* center  */}
           <div className='flex flex-1 h-full px-4 flex-col gap-6 overflow-y-auto'>
-            <form className='bg-primary px-4 rounded-lg' onSubmit={createPost}>
+            <form className='bg-primary px-4 rounded-lg' onSubmit={(e) => createPost(e)}>
               <div className='w-full flex items-center gap-2 py-4 border-b border-[#666666]'>
                 <img
                   src={user?.profileUrl ?? NoProfile}
@@ -59,9 +113,9 @@ const HomePage = () => {
                 placeholder='Unleash your creativity, share your insights !'
                 name='description'
                 value={post}
-                error={error}
                 onChange={handleInputChange}
                 onKeyDown={createPost}
+                error={error}
                 />
               </div>
               {errMsg?.message && (
@@ -147,8 +201,8 @@ const HomePage = () => {
                   key={post?._id}
                   post={post}
                   user={user}
-                  deletePost={() => {}}
-                  likePost={() => {}}
+                  deletePost={handleDelete}
+                  likePost={handleLikePost}
                 />
               ))
             ) : (

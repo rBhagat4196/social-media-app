@@ -5,7 +5,8 @@ import { MdClose } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import TextInput from "./TextInput";
 import Loading from "./Loading";
-import { updateProfile } from "../redux/userSlice";
+import { login, updateProfile } from "../redux/userSlice";
+import { apiRequest, handleFileUpload } from "../../utils";
 
 const EditProfile = () => {
   const { user } = useSelector((state) => state.user);
@@ -25,7 +26,7 @@ const EditProfile = () => {
     profession : user?.profession,
     location : user?.location,
   })
-  const onSubmit = async (e) => {
+  const Submit = async (e) => {
     e.preventDefault();
     if(!data.firstName || !data.lastName || !data.profession || !data.location ){
         setErrors({
@@ -34,11 +35,44 @@ const EditProfile = () => {
             profession : !data.profession ? "Profession does not match" : "",
             location : !data.location ? "Location does not match" : ""
         })
+        return;
     }
     setIsSubmitting(true);
-    setTimeout(()=>{
-        setIsSubmitting(false)
-    },2000)
+    setErrMsg("");
+    try{
+      const uri = picture && (await handleFileUpload(picture));
+      const {firstName,lastName,profession,location} = data;
+
+      const res = await apiRequest({
+        url : "/users/update-user",
+        data :{
+          firstName,
+          lastName,
+          profession,
+          location,
+          profileUrl : uri ? uri : user?.profileUrl
+        },
+        method : "PUT",
+        token : user?.token,
+      })
+
+      if(res?.status === "failed"){
+        setErrMsg(res);
+        setIsSubmitting(false);
+      }else{
+        setErrMsg("");
+        const newUser = {token : res?.token , ...res?.user};
+        dispatch(login(newUser));
+
+        setTimeout(()=>{
+          dispatch(updateProfile(false));
+          setIsSubmitting(false);
+        },5000)
+      }
+    }catch(e){
+      setIsSubmitting(false);
+      console.log(e)
+    }
   };
 
   const handleClose = () => {
@@ -88,7 +122,7 @@ const EditProfile = () => {
             </div>
             <form
               className='px-4 sm:px-6 flex flex-col gap-3 2xl:gap-6'
-              onSubmit={(e)=> onSubmit(e)}
+              onSubmit={(e)=> Submit(e)}
             >
               <TextInput
                 name='firstName'

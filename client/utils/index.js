@@ -73,8 +73,9 @@ export const deletePost = async(id,token)=>{
         await apiRequest({
             url:"/posts/"+id,
             token : token,
-            method : "POST",
+            method : "DELETE",
         });
+        // console.log("working")
         return;
     }catch(error){
         console.log(error)
