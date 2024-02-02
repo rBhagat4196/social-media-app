@@ -143,6 +143,7 @@ const HomePage = () => {
     fetchPost()
     fetchFriendRequest()
     fetchSuggestedFriends()
+    setLoading(false)
   }, [])
   return (
     <>

@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios"
 import { getPosts } from "../src/redux/postSlice"
-const APP_URL = "http://localhost:8800"
+const APP_URL = " http://localhost:8800"
 
 export const API = axios.create({
     baseURL : APP_URL,
@@ -84,7 +84,7 @@ export const deletePost = async(id,token)=>{
 
 export const getUserInfo = async(token,id) => {
     try{
-        const uri = id===undefined ? "users/get-user" : "/users/get-user/"+id;
+        const uri = id===undefined ? "/users/get-user" : "/users/get-user/"+id;
         const res = await apiRequest({
             url : uri,
             token : token,
@@ -106,7 +106,7 @@ export const getUserInfo = async(token,id) => {
 export const sendFriendRequest = async(token,id)=>{
     try{
         const res = await apiRequest({
-            url : "users/friend-request",
+            url : "/users/friend-request",
             token : token,
             method : "POST",
             data : {
@@ -123,7 +123,7 @@ export const sendFriendRequest = async(token,id)=>{
 export const viewUserProfile = async(token,id)=>{
     try{
         const res = await apiRequest({
-            url : "users/profile-view",
+            url : "/users/profile-view",
             token : token,
             method : "POST",
             data : { id}
