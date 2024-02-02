@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import axios from "axios"
 import { getPosts } from "../src/redux/postSlice"
-const APP_URL = " http://localhost:8800"
+const APP_URL = " http://localhost:8800/"
 
 export const API = axios.create({
     baseURL : APP_URL,

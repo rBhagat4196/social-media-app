@@ -375,13 +375,14 @@ export const profileViews = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
     const { id } = req.body;
-
     const user = await Users.findById(id);
-
-    user.views.push(userId);
-
-    await user.save();
-
+    // Check if the user's ID is already present in the views array
+    if (!user.views.includes(userId)) {
+      // If it's not present, add it to the views array
+      user.views.push(userId);
+      await user.save();
+    }
+    
     res.status(201).json({
       success: true,
       message: "Successfully",
@@ -395,6 +396,7 @@ export const profileViews = async (req, res, next) => {
     });
   }
 };
+
 
 export const suggestedFriends = async (req, res) => {
   try {

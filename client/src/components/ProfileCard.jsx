@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import NoProfile from '../assets/userprofile.png'
 import { LiaEditSolid } from 'react-icons/lia'
 import { updateProfile } from '../redux/userSlice'
@@ -11,8 +11,31 @@ import { SiGeeksforgeeks } from 'react-icons/si'
 import moment from 'moment'
 import { BsBriefcase, BsPersonFillAdd } from 'react-icons/bs'
 import { CiLocationOn } from 'react-icons/ci'
+import { sendFriendRequest, viewUserProfile } from '../../utils'
+import { useEffect } from 'react'
 const ProfileCard = ({ user }) => {
+  const {id} = useParams();
   const { user: data, edit } = useSelector((state) => state.user)
+  
+  const handleFriendRequest = async (id) => {
+    try {
+      const res = await sendFriendRequest(data?.token, id)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    console.log(true)
+    const fetchData = async () => {
+      if (id && user?._id != data?._id) {
+        console.log("in")
+        await viewUserProfile(data?.token,user?._id);
+      }
+    };
+
+    fetchData();
+  }, [user]);
+
   const dispatch = useDispatch()
   return (
     <div>
@@ -43,7 +66,7 @@ const ProfileCard = ({ user }) => {
             ) : (
               <button
                 className='bg-[#0444a430] text-sm text-white p-1 rounded'
-                onClick={() => {}}
+                onClick={() => handleFriendRequest(id)}
               >
                 <BsPersonFillAdd size={20} className='text-[#0f52b6]' />
               </button>
