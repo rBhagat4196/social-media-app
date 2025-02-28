@@ -10,17 +10,18 @@ dotenv.config();
 const { AUTH_EMAIL, AUTH_PASSWORD, APP_URL } = process.env;
 
 let transporter = nodemailer.createTransport({
-  host: "smtp.office365.com", // Updated SMTP host for Outlook
-  port: 587, // Correct port for TLS
-  secure: false, // Set to false for TLS
+  host: "smtp-mail.outlook.com", // Try this instead
+  port: 587,
+  secure: false,
   auth: {
     user: process.env.AUTH_EMAIL,
-    pass: process.env.AUTH_PASSWORD,
+    pass: process.env.AUTH_PASSWORD, // App Password here
   },
   tls: {
-    rejectUnauthorized: false, // Helps bypass certain certificate issues
+    rejectUnauthorized: false,
   },
 });
+
 
 
 export const sendVerificationEmail = async (user, res) => {
